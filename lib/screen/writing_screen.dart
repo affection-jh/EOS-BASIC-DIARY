@@ -21,8 +21,14 @@ class WritingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(diary.getFormattedDateTime()),
+        backgroundColor: Colors.white,
+        scrolledUnderElevation: 0,
+        title: Text(
+          diary.getFormattedDateTime(),
+          style: TextStyle(fontSize: 19),
+        ),
         actions: [
           TextButton(
             onPressed: () async {
@@ -43,7 +49,10 @@ class WritingScreen extends StatelessWidget {
               await context.read<DiaryService>().createDiary(diary);
               Navigator.pop(context);
             },
-            child: Text("등록하기"),
+            child: Text(
+              "등록하기",
+              style: TextStyle(color: Colors.black, fontSize: 16),
+            ),
           ),
         ],
       ),

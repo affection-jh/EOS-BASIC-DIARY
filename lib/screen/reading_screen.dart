@@ -15,7 +15,13 @@ class ReadingScreen extends StatelessWidget {
     contentController.text = diary.getContent();
 
     return Scaffold(
-      appBar: AppBar(title: Text(diary.getFormattedDateTime())),
+      backgroundColor: Colors.white,
+
+      appBar: AppBar(
+        title: Text(diary.getFormattedDateTime()),
+        backgroundColor: Colors.white,
+        scrolledUnderElevation: 0,
+      ),
       body: Padding(
         padding: EdgeInsets.all(20),
         child: Column(

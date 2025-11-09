@@ -1,3 +1,4 @@
+import 'package:diary/screen/home_screen.dart';
 import 'package:diary/screen/onboarding_screen.dart';
 import 'package:diary/service/diary_service.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: OnboardingScreen());
+    return MaterialApp(home: HomeScreen());
   }
 }

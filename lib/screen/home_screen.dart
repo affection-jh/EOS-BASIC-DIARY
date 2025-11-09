@@ -1,5 +1,9 @@
+import 'package:diary/data/diary.dart';
+import 'package:diary/screen/reading_screen.dart';
 import 'package:diary/screen/writing_screen.dart';
+import 'package:diary/service/diary_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -11,6 +15,9 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
+    final diaryService = context.watch<DiaryService>();
+    final diaryCount = diaryService.diaries.length;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -29,22 +36,44 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Stack(
         children: [
-          //todo:
-          //diaryService의존성 주입받기
-          //diaryService의 diaries 값을 사용하여 ListView.builder 수정하기.
-          ListView.builder(
-            itemCount: 3,
-            itemBuilder:
-                (context, index) => Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: GestureDetector(
-                    onTap: () {
-                      print("일기보기 화면으로 이동");
-                    },
-                    child: DiaryCard(),
+          if (diaryCount != 0) ...[
+            ListView.builder(
+              itemCount: diaryCount,
+              itemBuilder:
+                  (context, index) => Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (context) => ReadingScreen(
+                                  diary: diaryService.diaries[index],
+                                ),
+                          ),
+                        );
+                      },
+                      child: DiaryCard(diaryService.diaries[index]),
+                    ),
                   ),
-                ),
-          ),
+            ),
+          ],
+          if (diaryCount == 0) ...[
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+
+                children: [
+                  Icon(Icons.search_rounded, color: Colors.grey[600], size: 40),
+                  Text(
+                    "아직 일기가 없어요",
+                    style: TextStyle(color: Colors.grey[600], fontSize: 20),
+                  ),
+                ],
+              ),
+            ),
+          ],
           Positioned(
             bottom: 20,
             right: 20,
@@ -72,11 +101,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-//Todo:
-//파라미터로 일기 객체 받기
-//하드코딩된, title, content, emotion, createdAt 대신 일기 객체의 값과 메서드 사용
-
-Widget DiaryCard() {
+Widget DiaryCard(Diary diary) {
   return Container(
     margin: const EdgeInsets.only(bottom: 10),
     width: double.infinity,
@@ -90,21 +115,21 @@ Widget DiaryCard() {
         Positioned(
           right: 0,
           bottom: 0,
-          child: Image.asset("assets/images/기쁨.png", width: 100, height: 100),
+          child: Image.asset(diary.getEmotionImage(), width: 100, height: 100),
         ), // Positioned
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("2025-01-01"),
+              Text(diary.getFormattedDateTime()),
               Spacer(),
               Text(
-                "이것은 제목입니다.",
+                diary.getTitle(),
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ), // Text
               Text(
-                "이것은 내용입니다.",
+                diary.getContent(),
                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300),
               ), // Text
             ],
